@@ -1,0 +1,4 @@
+Fmeasure = 18.63
+NFmeasure = 4.57
+sdr_Fmeasure = 16.53
+adr_NFmaesure = 16.53
