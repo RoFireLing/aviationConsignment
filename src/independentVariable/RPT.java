@@ -26,7 +26,7 @@ public class RPT {
 
     public void randomPartitionTesting(){
         GenerateTestcases generateTestcases = new GenerateTestcases();//产生测试用例的对象
-        RPTMeasure rptMeasure = new RPTMeasure();//记录每一个结果的对象
+        
         RPTPartition rptPartition = new RPTPartition();//产生分区的对象
         int[] numOfpartition = {24,7};//记录分区的方式
         RPTLog rptLog = new RPTLog("RPT_log.txt");//日志记录的对象
@@ -34,6 +34,7 @@ public class RPT {
         List<String> methodsList = testMethods.getMethods();
         for (int n = 0; n < numOfpartition.length; n++) {//两种分区方式
             long totaltime = 0;
+			RPTMeasure rptMeasure = new RPTMeasure();//记录每一个结果的对象
             for (int i = 0; i < SEEDS; i++) {//种子
                 double fcounter = 0.0 ;//记录30次的fmeasure的总合
                 double tcounter = 0.0 ;//记录30次的tmeasure的总和

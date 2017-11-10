@@ -115,7 +115,7 @@ public class RT {
             }
         }
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        double meanTime = Double.parseDouble(decimalFormat.format(totaltime / 60.0)) ;
+        double meanTime = Double.parseDouble(decimalFormat.format(totaltime / 30.0)) ;
         rtLog.recordResult("RTResult.txt",rtMeasure.getMeanFmeasure(),rtMeasure.getMeanNFmeasure(),
                 rtMeasure.getStandardDevOfFmeasure(),rtMeasure.getStandardDevOfNFmeasure(),meanTime);
     }
