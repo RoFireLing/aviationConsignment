@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RTMeasure {
+    private static final String PATH = "RTResult.txt";
     private List<Integer> Fmeasure;
     private List<Integer> Tmeasure;
     public RTMeasure(){
@@ -15,7 +16,7 @@ public class RTMeasure {
         Fmeasure.add(item);
     }
 
-    public void addNFmeasure(int item){
+    public void addTmeasure(int item){
         Tmeasure.add(item);
     }
 
@@ -23,7 +24,7 @@ public class RTMeasure {
         return Fmeasure.size();
     }
 
-    public int sizeNFmeasure(){
+    public int sizeTmeasure(){
         return Tmeasure.size();
     }
 
@@ -36,7 +37,7 @@ public class RTMeasure {
         return decimalFormat.format(sum / Fmeasure.size());
     }
 
-    public String getMeanNFmeasure(){
+    public String getMeanTmeasure(){
         double sum = 0.0 ;
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         for (int i = 0; i < this.Tmeasure.size(); i++) {
@@ -57,7 +58,7 @@ public class RTMeasure {
      * 返回Fmeasure的标准差
      * @return 标准差
      */
-    public String getStandardDevOfNFmeasure(){
+    public String getStandardDevOfTmeasure(){
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         return decimalFormat.format(Math.sqrt(varianceOfArray(1,this.Tmeasure)));
     }
@@ -67,7 +68,7 @@ public class RTMeasure {
         if (temp == 0)
             mean = Double.parseDouble(getMeanFmeasure());
         else
-            mean = Double.parseDouble(getMeanNFmeasure());
+            mean = Double.parseDouble(getMeanTmeasure());
         for (int i = 0; i < dataArray.size(); i++) {
             result += Math.pow((dataArray.get(i) - mean),2);
         }

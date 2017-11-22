@@ -20,6 +20,7 @@ import java.util.List;
 public class RPT {
     private static final int TESTTIMES = 30 ;
     private static final int SEEDS = 30 ;
+    private static final double DIVID = TESTTIMES * SEEDS ;
     private static final int NUMOFTESTCASES = 30000;
     private static final String ORIGINAL_PACKAGE = "cn.edu.ustb.www.aviationconsignment";
     private static final int NUMOFMUTANTS = 12 ;
@@ -35,11 +36,9 @@ public class RPT {
         for (int n = 0; n < numOfpartition.length; n++) {//两种分区方式
             long totaltime = 0;
 			RPTMeasure rptMeasure = new RPTMeasure();//记录每一个结果的对象
+            long start = System.currentTimeMillis();
             for (int i = 0; i < SEEDS; i++) {//种子
-                double fcounter = 0.0 ;//记录30次的fmeasure的总合
-                double tcounter = 0.0 ;//记录30次的tmeasure的总和
-                double fmeasure = 0.0 ;
-                double tmeasure = 0.0 ;
+
                 for (int j = 0; j < TESTTIMES; j++) {//每一个序列重复30次
                     int counter = 0 ;
                     List<Bean> beans = new ArrayList<Bean>();
@@ -48,7 +47,7 @@ public class RPT {
                     killedMutants.clear();
                     MutantSet ms = new MutantSet();//测试用例集对象
                     beans = generateTestcases.generateTestcases(i,NUMOFTESTCASES);//生成测试用例
-                    long start = System.currentTimeMillis();
+
                     for (int k = 0; k < beans.size();) {
                         int partition = rptPartition.nextPartitionID(numOfpartition[n]);//获取下一个分区的ID
                         Bean bean;
@@ -94,20 +93,17 @@ public class RPT {
                                         killedMutants.add(temp);
                                         templist.add(temp);
                                         if (killedMutants.size() == 1){
-                                            fcounter += counter;
+                                            rptMeasure.addFmeasure((double)counter);
                                         }else if(killedMutants.size() == NUMOFMUTANTS){
-                                            long end = System.currentTimeMillis();
-                                            totaltime += (end - start);
-                                            tcounter += counter;
+                                            rptMeasure.addTmeasure((double)counter);
                                         }
                                         break;
                                     }
                                 }
 
                             }
-                            //记录1个测试用例在所有得变异体上执行之后的结果
-                            rptLog.recordProcessInfo("RPT_log.txt",String.valueOf(i),bean.getId(),
-                                    templist,String.valueOf(NUMOFMUTANTS - killedMutants.size()));
+//                            rptLog.recordProcessInfo("RPT_log.txt",String.valueOf(i),bean.getId(),
+//                                    templist,String.valueOf(NUMOFMUTANTS - killedMutants.size()));
                             if (killedMutants.size() >= NUMOFMUTANTS){
                                 break;
                             }
@@ -124,13 +120,11 @@ public class RPT {
                         }
                     }
                 }
-                fmeasure = fcounter / TESTTIMES;
-                tmeasure = tcounter /TESTTIMES;
-                rptMeasure.addFmeasure(fmeasure);
-                rptMeasure.addTmeasure(tmeasure);
             }
+            long end = System.currentTimeMillis();
+            totaltime += (end - start);
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
-            double meanTime = Double.parseDouble(decimalFormat.format(totaltime / 900.0)) ;
+            double meanTime = Double.parseDouble(decimalFormat.format(totaltime / DIVID)) ;
             rptLog.recordResult("RPTResult.txt",rptMeasure.getMeanFmeasure(),rptMeasure.getMeanTmeasure(), rptMeasure.getStandardDevOfFmeasure(),
                     rptMeasure.getStandardDevOfTmeasure(),numOfpartition[n],meanTime);
         }

@@ -24,6 +24,7 @@ public class DRT {
 
     private static final int TESTTIMES = 30 ;
     private static final int SEEDS = 30 ;
+    private static final double DIVID = TESTTIMES * SEEDS ;
     private static final int NUMOFTESTCASES = 30000;
     private static final String ORIGINAL_PACKAGE = "cn.edu.ustb.www.aviationconsignment";
     private static final int NUMOFMUTANTS = 12 ;
@@ -86,8 +87,8 @@ public class DRT {
         GenerateTestcases generateTestcases = new GenerateTestcases();//产生测试用例的对象
         DRTLog drtLog = new DRTLog("DRT_log.txt");
         RPTPartition rptPartition = new RPTPartition();
-        int[] numOfpartition = {24,7};//记录分区的方式
-//        int[] numOfpartition = {7};
+        int[] numOfpartition = {24,7};
+//        int[] numOfpartition = {24};
         double[] parameters = {0.00001,0.00005,0.0001,0.0005,0.001,0.005,0.01,0.05,0.1,0.2,0.3,0.4,0.5};
 //        double[] parameters = {0.001};
         TestMethods testMethods = new TestMethods();
@@ -97,12 +98,8 @@ public class DRT {
                 epsilon = parameters[j];
                 DRTMeasure drtMeasure = new DRTMeasure();
                 long totalTime = 0;//记录测试的总时间
+                long start = System.currentTimeMillis();
                 for (int k = 0; k < SEEDS; k++) {//每一个种子
-                    double fcounter = 0.0 ;//记录30次的fmeasure的总合
-                    double tcounter = 0.0 ;//记录30次的tmeasure的总和
-                    double fmeasure = 0.0 ;//记录每一个种子下的平均fmeasure的值
-                    double tmeasure = 0.0 ;//记录每一个种子下的平均tmaeasure的值
-
                     for (int l = 0; l < TESTTIMES; l++) {//测试重复次数
                         int counter = 0 ;//测试用例的计数器
                         int f = 0 ;//记录每一次的fmeasure的结果
@@ -117,7 +114,7 @@ public class DRT {
                         for (int m = 0; m < pd.length; m++) {
                             pd[m] = 1.0 / numOfpartition[i];
                         }
-                        long start = System.currentTimeMillis();
+
                         for (int m = 0; m < beans.size();) {//开始测试
                             int partition = nextPartition();
                             Bean bean;
@@ -162,11 +159,9 @@ public class DRT {
                                             killedMutants.add(temp);//只获得变异体的名字去掉路径
                                             templist.add(temp);
                                             if (killedMutants.size() == 1){
-                                                f += counter;
+                                                drtMeasure.addFmeasure(counter);
                                             }else if(killedMutants.size() == NUMOFMUTANTS){
-                                                long end = System.currentTimeMillis();
-                                                totalTime += (end - start);
-                                                t += counter;
+                                                drtMeasure.addTmeasure(counter);
                                             }
                                             break;
                                         }
@@ -189,26 +184,18 @@ public class DRT {
                             } catch (ClassNotFoundException e) {
                                 e.printStackTrace();
                             }
-                            drtLog.recordProcessInfo("DRT_log.txt",String.valueOf(k),bean.getId(),
-                                    templist,String.valueOf(NUMOFMUTANTS - killedMutants.size()),String.valueOf(partition),String.valueOf(tc));
+//                            drtLog.recordProcessInfo("DRT_log.txt",String.valueOf(k),bean.getId(),
+//                                    templist,String.valueOf(NUMOFMUTANTS - killedMutants.size()),String.valueOf(partition),String.valueOf(tc));
                             if (killedMutants.size() >= NUMOFMUTANTS){
                                 break;
                             }
                         }//tc
-                        fcounter += f;//记录每一次循环的fmeasure
-                        tcounter += t;//记录每一次循环的tmeasure
-//                        System.out.println("第"+l+"次："+"f:"+f+"\t" + "t"+t);
                     }//circle
-                    fmeasure = fcounter / TESTTIMES;
-                    tmeasure = tcounter /TESTTIMES;
-
-                    drtMeasure.addFmeasure(fmeasure);
-                    drtMeasure.addTmeasure(tmeasure);
                 }//seed
-
-
+                long end = System.currentTimeMillis();
+                totalTime = end - start;
                 DecimalFormat decimalFormat = new DecimalFormat("#.00");
-                double meanTime = Double.parseDouble(decimalFormat.format(totalTime / 900.0)) ;
+                double meanTime = Double.parseDouble(decimalFormat.format(totalTime / DIVID)) ;
                 drtLog.recordResult("DRTResult.xls",drtMeasure.getMeanFmeasure(),drtMeasure.getMeanTmeasure(),
                         drtMeasure.getStandardDevOfFmeasure(),drtMeasure.getStandardDevOfTmeasure(),numOfpartition[i],parameters[j],
                         meanTime);
