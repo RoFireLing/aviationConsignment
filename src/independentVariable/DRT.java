@@ -27,7 +27,7 @@ public class DRT {
     private static final double DIVID = TESTTIMES * SEEDS ;
     private static final int NUMOFTESTCASES = 30000;
     private static final String ORIGINAL_PACKAGE = "cn.edu.ustb.www.aviationconsignment";
-    private static final int NUMOFMUTANTS = 12 ;
+    private static final int NUMOFMUTANTS = 3 ;
     public DRT() {}
 
     /**
@@ -102,8 +102,7 @@ public class DRT {
                 for (int k = 0; k < SEEDS; k++) {//每一个种子
                     for (int l = 0; l < TESTTIMES; l++) {//测试重复次数
                         int counter = 0 ;//测试用例的计数器
-                        int f = 0 ;//记录每一次的fmeasure的结果
-                        int t = 0 ;//记录每一次的tmeasure的结果
+                        int fmeasure = 0 ;//记录每一次的fmeasure的结果
                         List<Bean> beans = new ArrayList<Bean>();
                         List<String> killedMutants = new ArrayList<String>();//记录杀死的变异体
                         MutantSet ms = new MutantSet();//测试用例集对象
@@ -159,10 +158,12 @@ public class DRT {
                                             killedMutants.add(temp);//只获得变异体的名字去掉路径
                                             templist.add(temp);
                                             if (killedMutants.size() == 1){
+                                                fmeasure = counter;
                                                 drtMeasure.addFmeasure(counter);
                                             }else if(killedMutants.size() == NUMOFMUTANTS){
                                                 drtMeasure.addTmeasure(counter);
-                                            }
+                                            }else
+                                                drtMeasure.addNFmeasure(counter - fmeasure);
                                             break;
                                         }
                                     }
@@ -196,9 +197,9 @@ public class DRT {
                 totalTime = end - start;
                 DecimalFormat decimalFormat = new DecimalFormat("#.00");
                 double meanTime = Double.parseDouble(decimalFormat.format(totalTime / DIVID)) ;
-                drtLog.recordResult("DRTResult.xls",drtMeasure.getMeanFmeasure(),drtMeasure.getMeanTmeasure(),
-                        drtMeasure.getStandardDevOfFmeasure(),drtMeasure.getStandardDevOfTmeasure(),numOfpartition[i],parameters[j],
-                        meanTime);
+                drtLog.recordResult("DRTResult.xls",drtMeasure.getMeanFmeasure(),drtMeasure.getMeanNFmeasure(),
+                        drtMeasure.getMeanTmeasure(),drtMeasure.getStandardDevOfFmeasure(),drtMeasure.getStandardDevOfNFmeasure(),
+                        drtMeasure.getStandardDevOfTmeasure(),numOfpartition[i],parameters[j], meanTime);
             }//parameters
         }//numofpartitions
     }

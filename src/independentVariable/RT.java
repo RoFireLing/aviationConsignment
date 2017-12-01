@@ -21,7 +21,7 @@ public class RT {
     private static final double DIVID = TESTTIMES * SEEDS ;
     private static final int NUMOFTESTCASES = 30000;
     private static final String ORIGINAL_PACKAGE = "cn.edu.ustb.www.aviationconsignment";
-    private static final int NUMOFMUTANTS = 12 ;
+    private static final int NUMOFMUTANTS = 3 ;
     public void randomTesting(){
         GenerateTestcases generateTestcases = new GenerateTestcases();
         //记录每一个测试序列的测试结果
@@ -43,6 +43,8 @@ public class RT {
                 List<String> killedMutants = new ArrayList<String>();
                 killedMutants.clear();
                 int counter = 0 ;
+                int fmeasure = 0 ;//记录fmeasure的值以便计算出nfmeasure的值
+
                 for (int j = 0; j < beans.size(); j++) {//每一个测试用例要在所有的变异体上执行
                     System.out.println("test begin:");
                     Bean bean = beans.get(j);//当前测试用例
@@ -84,10 +86,12 @@ public class RT {
                                     killedMutants.add(temp);
                                     templist.add(temp);
                                     if (killedMutants.size() == 1){
+                                        fmeasure = counter;
                                         rtMeasure.addFmeasure(counter);
                                     }else if (killedMutants.size() == NUMOFMUTANTS){
                                         rtMeasure.addTmeasure(counter);
-                                    }
+                                    }else
+                                        rtMeasure.addNFmeasure(counter - fmeasure);
                                     break;
                                 }
                             }
@@ -116,8 +120,9 @@ public class RT {
         totaltime = (end - start);
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         double meanTime = Double.parseDouble(decimalFormat.format(totaltime / DIVID)) ;
-        rtLog.recordResult("RTResult.txt",rtMeasure.getMeanFmeasure(),rtMeasure.getMeanTmeasure(),
-                rtMeasure.getStandardDevOfFmeasure(),rtMeasure.getStandardDevOfTmeasure(),meanTime);
+        rtLog.recordResult("RTResult.txt",rtMeasure.getMeanFmeasure(),rtMeasure.getMeanNFmeasure(),
+                rtMeasure.getMeanTmeasure(),rtMeasure.getStandardDevOfFmeasure(),rtMeasure.getStandardDevOfNFmeasure(),
+                rtMeasure.getStandardDevOfTmeasure(),meanTime);
     }
     public static void main(String[] args) {
         RT rt = new RT();

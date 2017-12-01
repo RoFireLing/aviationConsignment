@@ -18,7 +18,7 @@ import java.util.List;
 import static java.io.File.separator;
 
 public class DRTLog {
-    public static final int COLUMN = 7 ;
+    public static final int COLUMN = 9 ;
     public DRTLog(String filename) {
         createFile(filename);
     }
@@ -68,7 +68,8 @@ public class DRTLog {
      * @param numOfpartitions 分区的数目
      * @param epsilon 参数
      */
-    public void recordResult(String filename, String fmeasure, String tmeasure, String sdrfmeasure,
+    public void recordResult(String filename, String fmeasure, String nfmeasure,
+                             String tmeasure,String sdrfmeasure,String sdrnfmeasure,
                              String sdrtmeasure, int numOfpartitions, double epsilon,double time){
         String path = System.getProperty("user.dir") + separator + "result" + separator + filename;
         File file = new File(path);
@@ -92,7 +93,8 @@ public class DRTLog {
             WritableSheet sheet = writableWorkbook.getSheet(0);
             //获得之前sheet写入的位置
             int temp = sheet.getRows();
-            String[] elements = {String.valueOf(numOfpartitions),String.valueOf(epsilon),fmeasure,sdrfmeasure,tmeasure,sdrtmeasure,String.valueOf(time)};
+            String[] elements = {String.valueOf(numOfpartitions),String.valueOf(epsilon),fmeasure,sdrfmeasure,
+                    nfmeasure,sdrnfmeasure,tmeasure,sdrtmeasure,String.valueOf(time)};
             //追加数据
             for (int i = 0; i < COLUMN; i++) {
                 sheet.addCell(new Label(i,temp,elements[i],wcf));
@@ -152,7 +154,7 @@ public class DRTLog {
             //向新创建的文件中添加表头
             WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
             WritableSheet sheet = writableWorkbook.createSheet("sheet",0);
-            String[] elements = {"partitions","epsilon","Fmeasure","sdrFmeasure","Tmeasure","sdrTmeasure","time"};
+            String[] elements = {"partitions","epsilon","Fmeasure","sdrFmeasure","NFmeasure","sdrNFmeasure","Tmeasure","sdrTmeasure","time"};
             for (int i = 0; i < COLUMN; i++) {
                 sheet.addCell(new Label(i,0,elements[i],wcf));
                 sheet.setColumnView(i,20);

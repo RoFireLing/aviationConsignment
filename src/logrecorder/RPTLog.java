@@ -50,7 +50,8 @@ public class RPTLog {
     }
 
     public void recordResult(String filename,String fmeasure,String nfmeasure,
-                             String sdrfmeasure,String sdrnfmeasure,int numOfpartitions,double time){
+                             String tmeasure,String sdrfmeasure, String sdrnfmeasure,
+                             String sdrtmeasure,int numOfpartitions,double time){
         String path = System.getProperty("user.dir")+ separator+"result"+separator+filename;
         File file = new File(path);
         if (!file.exists()){
@@ -63,8 +64,13 @@ public class RPTLog {
         //向文件中记录结果
         try{
             FileWriter fileWriter = new FileWriter(file,true);
-            String cotent = "\n"+"分区："+String.valueOf(numOfpartitions) + "\n"+"Fmeasure = " + fmeasure + "\n" + "Tmeasure = "+ nfmeasure + "\n"+
-                    "sdr_Fmeasure = " + sdrfmeasure + "\n" + "adr_Tmaesure = " + sdrnfmeasure + "\n"+"时间："+String.valueOf(time);
+            String cotent = "\n"+"分区："+String.valueOf(numOfpartitions) + "\n"+"Fmeasure = " + fmeasure + "\n" +
+                    "NFmeasure = " + nfmeasure + "\n" +
+                    "Tmeasure = "+ tmeasure + "\n"+
+                    "sdr_Fmeasure = " + sdrfmeasure + "\n" +
+                    "sdr_NFmeasure = " + sdrnfmeasure + "\n" +
+                    "adr_Tmaesure = " + sdrtmeasure + "\n"+
+                    "时间："+String.valueOf(time);
             fileWriter.write(cotent);
             fileWriter.close();
         } catch (IOException e) {

@@ -23,7 +23,7 @@ public class RPT {
     private static final double DIVID = TESTTIMES * SEEDS ;
     private static final int NUMOFTESTCASES = 30000;
     private static final String ORIGINAL_PACKAGE = "cn.edu.ustb.www.aviationconsignment";
-    private static final int NUMOFMUTANTS = 12 ;
+    private static final int NUMOFMUTANTS = 3 ;
 
     public void randomPartitionTesting(){
         GenerateTestcases generateTestcases = new GenerateTestcases();//产生测试用例的对象
@@ -41,6 +41,7 @@ public class RPT {
 
                 for (int j = 0; j < TESTTIMES; j++) {//每一个序列重复30次
                     int counter = 0 ;
+                    int fmeasure = 0 ;
                     List<Bean> beans = new ArrayList<Bean>();
                     beans.clear();
                     List<String> killedMutants = new ArrayList<String>();//记录杀死的变异体
@@ -93,10 +94,12 @@ public class RPT {
                                         killedMutants.add(temp);
                                         templist.add(temp);
                                         if (killedMutants.size() == 1){
+                                            fmeasure = counter;
                                             rptMeasure.addFmeasure((double)counter);
                                         }else if(killedMutants.size() == NUMOFMUTANTS){
                                             rptMeasure.addTmeasure((double)counter);
-                                        }
+                                        }else
+                                            rptMeasure.addNFmeasure((double)(counter - fmeasure));
                                         break;
                                     }
                                 }
@@ -125,7 +128,8 @@ public class RPT {
             totaltime += (end - start);
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             double meanTime = Double.parseDouble(decimalFormat.format(totaltime / DIVID)) ;
-            rptLog.recordResult("RPTResult.txt",rptMeasure.getMeanFmeasure(),rptMeasure.getMeanTmeasure(), rptMeasure.getStandardDevOfFmeasure(),
+            rptLog.recordResult("RPTResult.txt",rptMeasure.getMeanFmeasure(),rptMeasure.getMeanNFmeasure(),
+                    rptMeasure.getMeanTmeasure(),rptMeasure.getStandardDevOfFmeasure(),rptMeasure.getStandardDevOfNFmeasure(),
                     rptMeasure.getStandardDevOfTmeasure(),numOfpartition[n],meanTime);
         }
     }

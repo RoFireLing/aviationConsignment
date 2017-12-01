@@ -3,14 +3,17 @@ package dependentVariable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.DeflaterOutputStream;
 
 public class RPTMeasure {
     public RPTMeasure() {
         Fmeasure = new ArrayList<Double>();
         Tmeasure = new ArrayList<Double>();
+        NFmeasure = new ArrayList<Double>();
     }
     private List<Double> Fmeasure;
     private List<Double> Tmeasure;
+    private List<Double> NFmeasure;
     public void addFmeasure(double item){
         Fmeasure.add(item);
     }
@@ -19,6 +22,8 @@ public class RPTMeasure {
         Tmeasure.add(item);
     }
 
+    public void addNFmeasure(double item){NFmeasure.add(item);}
+
     public int sizeFmeasure(){
         return Fmeasure.size();
     }
@@ -26,6 +31,8 @@ public class RPTMeasure {
     public int sizeTmeasure(){
         return Tmeasure.size();
     }
+
+    public int sizeNFmeasure(){return NFmeasure.size();}
 
     public String getMeanFmeasure(){
         double sum = 0.0 ;
@@ -45,6 +52,15 @@ public class RPTMeasure {
         return decimalFormat.format(sum / Tmeasure.size());
     }
 
+    public String getMeanNFmeasure(){
+        double sum = 0.0 ;
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        for (int i = 0; i < this.NFmeasure.size(); i++) {
+            sum = sum + NFmeasure.get(i);
+        }
+        return decimalFormat.format(sum / NFmeasure.size());
+    }
+
     /**
      * 返回Fmeasure的标准差
      * @return 标准差
@@ -54,7 +70,7 @@ public class RPTMeasure {
         return decimalFormat.format(Math.sqrt(varianceOfArray(0,this.Fmeasure)));
     }
     /**
-     * 返回Fmeasure的标准差
+     * 返回Tmeasure的标准差
      * @return 标准差
      */
     public String getStandardDevOfTmeasure(){
@@ -62,31 +78,32 @@ public class RPTMeasure {
         return decimalFormat.format(Math.sqrt(varianceOfArray(1,this.Tmeasure)));
     }
 
+    public String getStandardDevOfNFmeasure(){
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        return decimalFormat.format(Math.sqrt(varianceOfArray(2,this.NFmeasure)));
+    }
+
     private double varianceOfArray(int temp,List<Double> dataArray) {
         double result = 0.0;
         double mean = 0.0;
         if (temp == 0)
             mean = Double.parseDouble(getMeanFmeasure());
-        else
+        else if (temp == 1)
             mean = Double.parseDouble(getMeanTmeasure());
+        else
+            mean = Double.parseDouble(getMeanNFmeasure());
         for (int i = 0; i < dataArray.size(); i++) {
             result += Math.pow((dataArray.get(i) - mean),2);
         }
         return result / (dataArray.size() - 1);
     }
-    public void toPrint(){
-        System.out.println("F-measure:");
-        String f = "";
-        for (int i = 0; i < Fmeasure.size(); i++) {
-            f += String.valueOf(Fmeasure.get(i)) + ",";
-        }
-        System.out.println(f);
-        System.out.println("T-measure");
-        String nf = "";
-        for (int i = 0; i < Tmeasure.size(); i++) {
-            nf += String.valueOf(Tmeasure.get(i))+", ";
-        }
-        System.out.println(nf);
-    }
 
+    @Override
+    public String toString() {
+        return "RPTMeasure{" +
+                "Fmeasure=" + Fmeasure +
+                ", Tmeasure=" + Tmeasure +
+                ", NFmeasure=" + NFmeasure +
+                '}';
+    }
 }

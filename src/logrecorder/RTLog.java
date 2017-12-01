@@ -48,7 +48,10 @@ public class RTLog {
 
 
     }
-    public void recordResult(String filename,String fmeasure,String nfmeasure,String sdrfmeasure,String sdrnfmeasure,double time){
+    public void recordResult(String filename,String fmeasure,
+                             String nfmeasure,String tmeasure,
+                             String sdrfmeasure, String sdrnfmeasure,
+                             String sdrtmeasure,double time){
         String path = System.getProperty("user.dir")+ separator+"result"+separator+filename;
         File file = new File(path);
         if (!file.exists()){
@@ -61,9 +64,12 @@ public class RTLog {
         //向文件中记录结果
         try{
             FileWriter fileWriter = new FileWriter(file);
-            String cotent = "Fmeasure = " + fmeasure + "\n" + "Tmeasure = "+ nfmeasure + "\n"+
-                    "sdr_Fmeasure = " + sdrfmeasure + "\n" + "adr_Tmaesure = " + sdrnfmeasure
-                    + "\n" + "平均时间为："+ String.valueOf(time);
+            String cotent = "Fmeasure = " + fmeasure + "\n" + "NFmeasure = " + nfmeasure + "\n" +
+                    "Tmeasure = "+ tmeasure + "\n"+
+                    "sdr_Fmeasure = " + sdrfmeasure + "\n" +
+                    "adr_NFmaesure = " + sdrnfmeasure + "\n" +
+                    "adr_Tmaesure = " + sdrtmeasure + "\n" +
+                    "平均时间为："+ String.valueOf(time);
             fileWriter.write(cotent);
             fileWriter.close();
         } catch (IOException e) {
