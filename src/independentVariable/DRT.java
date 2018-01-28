@@ -30,6 +30,10 @@ public class DRT {
     private static final int NUMOFMUTANTS = 3 ;
     public DRT() {}
 
+    List<Double> ftime = new ArrayList<Double>(); //里面存放杀死第一个变异体的平均时间时间
+
+    List<Double> f2time = new ArrayList<Double>(); //里面存放杀死第二个变异体的平均时间
+
     /**
      * 获取第一个分区的ID
      * @return 返回第一个分区的ID
@@ -95,6 +99,11 @@ public class DRT {
         List<String> methodsList = testMethods.getMethods();
         for (int i = 0; i < numOfpartition.length; i++) {//分区方式
             for (int j = 0; j < parameters.length; j++) {
+
+                List<Long> falltime = new ArrayList<Long>(); //里面存放杀死第一个变异体的所有时间
+
+                List<Long> f2alltime = new ArrayList<Long>(); //里面存放杀死第二个变异体的所有时间
+
                 epsilon = parameters[j];
                 DRTMeasure drtMeasure = new DRTMeasure();
                 long totalTime = 0;//记录测试的总时间
@@ -158,12 +167,17 @@ public class DRT {
                                             killedMutants.add(temp);//只获得变异体的名字去掉路径
                                             templist.add(temp);
                                             if (killedMutants.size() == 1){
+                                                long ftimeTemp = start - System.currentTimeMillis();
+                                                falltime.add(ftimeTemp);
                                                 fmeasure = counter;
                                                 drtMeasure.addFmeasure(counter);
                                             }else if(killedMutants.size() == NUMOFMUTANTS){
                                                 drtMeasure.addTmeasure(counter);
-                                            }else
+                                            }else{
+                                                long f2timeTemp = start - System.currentTimeMillis();
+                                                f2alltime.add(f2timeTemp);
                                                 drtMeasure.addNFmeasure(counter - fmeasure);
+                                            }
                                             break;
                                         }
                                     }
@@ -193,9 +207,26 @@ public class DRT {
                         }//tc
                     }//circle
                 }//seed
+                DecimalFormat decimalFormat = new DecimalFormat("#.00");
+                //计算平均时间
+                long ftotaltime = 0;
+                for (int k = 0; k < falltime.size(); k++) {
+                    ftotaltime += falltime.get(k);
+                }
+                double meanfTime = Double.parseDouble(decimalFormat.format(ftotaltime / DIVID)) ;
+
+                long f2totaltime = 0;
+                for (int k = 0; k < f2alltime.size(); k++) {
+                    f2totaltime += f2alltime.get(k);
+                }
+                double meanf2Time = Double.parseDouble(decimalFormat.format(f2totaltime / DIVID)) ;
+
+                ftime.add(meanfTime);
+                f2time.add(meanf2Time);
+
                 long end = System.currentTimeMillis();
                 totalTime = end - start;
-                DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
                 double meanTime = Double.parseDouble(decimalFormat.format(totalTime / DIVID)) ;
                 drtLog.recordResult("DRTResult.xls",drtMeasure.getMeanFmeasure(),drtMeasure.getMeanNFmeasure(),
                         drtMeasure.getMeanTmeasure(),drtMeasure.getStandardDevOfFmeasure(),drtMeasure.getStandardDevOfNFmeasure(),
