@@ -51,7 +51,8 @@ public class RPTLog {
 
     public void recordResult(String filename,String fmeasure,String nfmeasure,
                              String tmeasure,String sdrfmeasure, String sdrnfmeasure,
-                             String sdrtmeasure,int numOfpartitions,double time){
+                             String sdrtmeasure,int numOfpartitions,
+                             double Ftime,double F2time,double Ttime){
         String path = System.getProperty("user.dir")+ separator+"result"+separator+filename;
         File file = new File(path);
         if (!file.exists()){
@@ -70,7 +71,9 @@ public class RPTLog {
                     "sdr_Fmeasure = " + sdrfmeasure + "\n" +
                     "sdr_NFmeasure = " + sdrnfmeasure + "\n" +
                     "adr_Tmaesure = " + sdrtmeasure + "\n"+
-                    "时间："+String.valueOf(time);
+                    "Ftime："+String.valueOf(Ftime) + "\n"+
+                    "F2time："+String.valueOf(F2time) + "\n"+
+                    "Ttime："+String.valueOf(Ttime);
             fileWriter.write(cotent);
             fileWriter.close();
         } catch (IOException e) {

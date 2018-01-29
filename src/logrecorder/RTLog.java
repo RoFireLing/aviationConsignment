@@ -51,7 +51,7 @@ public class RTLog {
     public void recordResult(String filename,String fmeasure,
                              String nfmeasure,String tmeasure,
                              String sdrfmeasure, String sdrnfmeasure,
-                             String sdrtmeasure,double time){
+                             String sdrtmeasure,double Ftime,double F2time,double Ttime){
         String path = System.getProperty("user.dir")+ separator+"result"+separator+filename;
         File file = new File(path);
         if (!file.exists()){
@@ -69,7 +69,9 @@ public class RTLog {
                     "sdr_Fmeasure = " + sdrfmeasure + "\n" +
                     "adr_NFmaesure = " + sdrnfmeasure + "\n" +
                     "adr_Tmaesure = " + sdrtmeasure + "\n" +
-                    "平均时间为："+ String.valueOf(time);
+                    "Ftime："+String.valueOf(Ftime) + "\n"+
+                    "F2time："+String.valueOf(F2time) + "\n"+
+                    "Ttime："+String.valueOf(Ttime);
             fileWriter.write(cotent);
             fileWriter.close();
         } catch (IOException e) {

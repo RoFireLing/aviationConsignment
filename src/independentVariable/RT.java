@@ -22,6 +22,7 @@ public class RT {
     private static final int NUMOFTESTCASES = 30000;
     private static final String ORIGINAL_PACKAGE = "cn.edu.ustb.www.aviationconsignment";
     private static final int NUMOFMUTANTS = 3 ;
+
     public void randomTesting(){
         GenerateTestcases generateTestcases = new GenerateTestcases();
         //记录每一个测试序列的测试结果
@@ -30,9 +31,18 @@ public class RT {
         long totaltime = 0;
         TestMethods testMethods = new TestMethods();
         List<String> methodsList = testMethods.getMethods();
-        long start = System.currentTimeMillis();//开始测试的时间
+        List<Long> falltime = new ArrayList<Long>(); //里面存放杀死第一个变异体的所有时间
+
+        List<Long> f2alltime = new ArrayList<Long>(); //里面存放杀死第二个变异体的所有时间
+
+        List<Long> talltime = new ArrayList<Long>(); //里面存放杀死第二个变异体的所有时间
+
+
+
         for (int i = 0; i < SEEDS; i++) {
             for (int r = 0; r < TESTTIMES; r++) {
+
+
                 List<Bean> beans = new ArrayList<Bean>();
                 //产生测试用例
                 beans.clear();
@@ -44,6 +54,9 @@ public class RT {
                 killedMutants.clear();
                 int counter = 0 ;
                 int fmeasure = 0 ;//记录fmeasure的值以便计算出nfmeasure的值
+
+                long starttemp = System.currentTimeMillis();
+                long ftime = 0;
 
                 for (int j = 0; j < beans.size(); j++) {//每一个测试用例要在所有的变异体上执行
                     System.out.println("test begin:");
@@ -85,13 +98,22 @@ public class RT {
                                     String temp = str[6];
                                     killedMutants.add(temp);
                                     templist.add(temp);
+
                                     if (killedMutants.size() == 1){
+                                        long ftimeTemp = System.currentTimeMillis();
+                                        ftime = ftimeTemp;
+                                        falltime.add(ftimeTemp - starttemp);
                                         fmeasure = counter;
                                         rtMeasure.addFmeasure(counter);
                                     }else if (killedMutants.size() == NUMOFMUTANTS){
                                         rtMeasure.addTmeasure(counter);
-                                    }else
+                                        long ttimeTemp = System.currentTimeMillis();
+                                        talltime.add(ttimeTemp - starttemp);
+                                    }else{
                                         rtMeasure.addNFmeasure(counter - fmeasure);
+                                        long f2timeTemp = System.currentTimeMillis();
+                                        f2alltime.add(f2timeTemp - ftime);
+                                    }
                                     break;
                                 }
                             }
@@ -116,13 +138,29 @@ public class RT {
                 }
             }
         }
-        long end = System.currentTimeMillis();
-        totaltime = (end - start);
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        double meanTime = Double.parseDouble(decimalFormat.format(totaltime / DIVID)) ;
+        long ftotaltime = 0;
+        for (int k = 0; k < falltime.size(); k++) {
+            ftotaltime += falltime.get(k);
+        }
+        double meanfTime = Double.parseDouble(decimalFormat.format(ftotaltime / DIVID)) ;
+
+        long f2totaltime = 0;
+        for (int k = 0; k < f2alltime.size(); k++) {
+            f2totaltime += f2alltime.get(k);
+        }
+        double meanf2Time = Double.parseDouble(decimalFormat.format(f2totaltime / DIVID)) ;
+
+        long ttotaltime = 0;
+
+        for (int k = 0; k < talltime.size(); k++) {
+            ttotaltime += talltime.get(k);
+        }
+        double meantime = Double.parseDouble(decimalFormat.format(ttotaltime / DIVID)) ;
+
         rtLog.recordResult("RTResult.txt",rtMeasure.getMeanFmeasure(),rtMeasure.getMeanNFmeasure(),
                 rtMeasure.getMeanTmeasure(),rtMeasure.getStandardDevOfFmeasure(),rtMeasure.getStandardDevOfNFmeasure(),
-                rtMeasure.getStandardDevOfTmeasure(),meanTime);
+                rtMeasure.getStandardDevOfTmeasure(), meanfTime,meanf2Time,meantime);
     }
     public static void main(String[] args) {
         RT rt = new RT();

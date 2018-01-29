@@ -1,0 +1,9 @@
+Fmeasure = 13.30
+NFmeasure = 14.90
+Tmeasure = 41.80
+sdr_Fmeasure = 10.34
+adr_NFmaesure = 24.64
+adr_Tmaesure = 27.13
+Ftime：0.38
+F2time：0.19
+Ttime：0.69
