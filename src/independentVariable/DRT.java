@@ -22,8 +22,8 @@ public class DRT {
     private Random r = new Random();
     private double epsilon;
 
-    private static final int TESTTIMES = 30 ;
-    private static final int SEEDS = 30 ;
+    private static final int TESTTIMES = 20 ;
+    private static final int SEEDS = 20 ;
     private static final double DIVID = TESTTIMES * SEEDS ;
     private static final int NUMOFTESTCASES = 30000;
     private static final String ORIGINAL_PACKAGE = "cn.edu.ustb.www.aviationconsignment";
@@ -87,10 +87,12 @@ public class DRT {
         GenerateTestcases generateTestcases = new GenerateTestcases();//产生测试用例的对象
         DRTLog drtLog = new DRTLog("DRT_log.txt");
         RPTPartition rptPartition = new RPTPartition();
-        int[] numOfpartition = {24,7};
+//        int[] numOfpartition = {24,7};
+        int[] numOfpartition = {7};
 //        int[] numOfpartition = {24};
-        double[] parameters = {0.00001,0.00005,0.0001,0.0005,0.001,0.005,0.01,0.05,0.1,0.2,0.3,0.4,0.5};
-//        double[] parameters = {0.001};
+//        double[] parameters = {0.00001,0.00005,0.0001,0.0005,0.001,0.005,0.01,0.05,0.1,0.2,0.3,0.4,0.5};
+//        double[] parameters = {0.008841,0.007833,0.007031,0.006378,0.005836};
+        double[] parameters = {0.014726510255593886,0.029342870305316064,0.043959230355038244};
         TestMethods testMethods = new TestMethods();
         List<String> methodsList = testMethods.getMethods();
         for (int i = 0; i < numOfpartition.length; i++) {//分区方式
