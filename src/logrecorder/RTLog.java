@@ -113,5 +113,9 @@ public class RTLog {
     }
 
 
+    public void record(String name, int counter){
+
+    }
+
 
 }
